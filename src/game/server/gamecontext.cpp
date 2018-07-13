@@ -63,7 +63,6 @@ void CGameContext::Clear()
 	CVoteOptionServer *pVoteOptionLast = m_pVoteOptionLast;
 	int NumVoteOptions = m_NumVoteOptions;
 	CTuningParams Tuning = m_Tuning;
-	CStandardSettings StandardSettings = m_StandardSettings;
 
 	m_Resetting = true;
 	this->~CGameContext();
@@ -75,7 +74,6 @@ void CGameContext::Clear()
 	m_pVoteOptionLast = pVoteOptionLast;
 	m_NumVoteOptions = NumVoteOptions;
 	m_Tuning = Tuning;
-	m_StandardSettings = StandardSettings;
 }
 
 
@@ -1879,7 +1877,6 @@ void CGameContext::OnShutdown()
 	delete m_pController;
 	m_pController = 0;
 	// Load standard settings before new map loads
-	LoadStandardSettings();
 	Clear();
 }
 
@@ -1908,41 +1905,6 @@ void CGameContext::LoadMapSettings()
 			delete[] pBuf;
 		}
 	}
-}
-
-void CGameContext::SaveStandardSettings()
-{
-	m_StandardSettings.m_SvZombieRatio = g_Config.m_SvZombieRatio;
-	m_StandardSettings.m_SvZWarmup = g_Config.m_SvZWarmup;
-	m_StandardSettings.m_SvDoors = g_Config.m_SvDoors;
-	m_StandardSettings.m_SvHdoorReopenTime = g_Config.m_SvHdoorReopenTime;
-	m_StandardSettings.m_SvNukeTime = g_Config.m_SvNukeTime;
-	m_StandardSettings.m_SvInfiniteAmmo = g_Config.m_SvInfiniteAmmo;
-	m_StandardSettings.m_SvPickupRespawn = g_Config.m_SvPickupRespawn;
-	m_StandardSettings.m_SvTeleportGrenade = g_Config.m_SvTeleportGrenade;
-	m_StandardSettings.m_SvRegen = g_Config.m_SvRegen;
-	m_StandardSettings.m_SvRegenHp = g_Config.m_SvRegenHp;
-	m_StandardSettings.m_SvZombieHp = g_Config.m_SvZombieHp;
-	m_StandardSettings.m_Tuning = m_Tuning;
-	dbg_msg("server", "Standardsettings saved!");
-}
-
-void CGameContext::LoadStandardSettings()
-{
-	g_Config.m_SvZombieRatio = m_StandardSettings.m_SvZombieRatio;
-	g_Config.m_SvZWarmup = m_StandardSettings.m_SvZWarmup;
-	g_Config.m_SvDoors = m_StandardSettings.m_SvDoors;
-	g_Config.m_SvHdoorReopenTime = m_StandardSettings.m_SvHdoorReopenTime;
-	g_Config.m_SvNukeTime = m_StandardSettings.m_SvNukeTime;
-	g_Config.m_SvInfiniteAmmo = m_StandardSettings.m_SvInfiniteAmmo;
-	g_Config.m_SvPickupRespawn = m_StandardSettings.m_SvPickupRespawn;
-	g_Config.m_SvTeleportGrenade = m_StandardSettings.m_SvTeleportGrenade;
-	g_Config.m_SvRegen = m_StandardSettings.m_SvRegen;
-	g_Config.m_SvRegenHp = m_StandardSettings.m_SvRegenHp;
-	g_Config.m_SvZombieHp = m_StandardSettings.m_SvZombieHp;
-	g_Config.m_SvFlushCustomTeleporter = 0; // Map sets this
-	m_Tuning = m_StandardSettings.m_Tuning;
-	dbg_msg("server", "Standardsettings loaded!");
 }
 
 void CGameContext::OnSnap(int ClientID)
