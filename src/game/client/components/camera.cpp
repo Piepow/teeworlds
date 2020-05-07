@@ -135,7 +135,7 @@ void CCamera::ConSetPosition(IConsole::IResult *pResult, void *pUserData)
 		pSelf->ChangePosition(PositionNumber);
 }
 
-const float ZoomStep = 0.866025f;
+const float ZoomStep = 0.8f;
 
 void CCamera::ConZoomPlus(IConsole::IResult *pResult, void *pUserData)
 {
@@ -146,8 +146,7 @@ void CCamera::ConZoomPlus(IConsole::IResult *pResult, void *pUserData)
 void CCamera::ConZoomMinus(IConsole::IResult *pResult, void *pUserData)
 {
 	CCamera *pSelf = (CCamera *)pUserData;
-	if(pSelf->m_Zoom < 500.0f / ZoomStep)
-		pSelf->m_Zoom *= 1 / ZoomStep;
+	pSelf->m_Zoom /= ZoomStep;
 }
 
 void CCamera::ConZoomReset(IConsole::IResult *pResult, void *pUserData)
