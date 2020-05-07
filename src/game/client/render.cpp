@@ -539,7 +539,13 @@ void CRenderTools::RenderTee(CAnimState *pAnim, const CTeeRenderInfo *pInfo, int
 				SelectSprite(SPRITE_TEE_FOOT, 0, 0, 0);
 			}
 
-			IGraphics::CQuadItem QuadItem(Position.x+pFoot->m_X*AnimScale, Position.y+pFoot->m_Y*AnimScale, w, h);
+			const float offsetX = 2.0f;
+			IGraphics::CQuadItem QuadItem(
+				Position.x+pFoot->m_X*AnimScale + offsetX,
+				Position.y+pFoot->m_Y*AnimScale,
+				w, h
+			);
+
 			Graphics()->QuadsDraw(&QuadItem, 1);
 			Graphics()->QuadsEnd();
 		}
