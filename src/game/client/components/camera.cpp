@@ -32,14 +32,14 @@ CCamera::CCamera()
 
 	m_CurrentPosition = -1;
 	m_MoveTime = 0.0f;
+
+	m_Zoom = 1.0f;
 }
 
 void CCamera::OnRender()
 {
 	if(Client()->State() == IClient::STATE_ONLINE || Client()->State() == IClient::STATE_DEMOPLAYBACK)
 	{
-		m_Zoom = 1.0f;
-
 		// update camera center
 		if(m_pClient->m_Snap.m_SpecInfo.m_Active && !m_pClient->m_Snap.m_SpecInfo.m_UsePosition &&
 			(m_pClient->m_Snap.m_SpecInfo.m_SpecMode == SPEC_FREEVIEW || (m_pClient->m_Snap.m_pLocalInfo && !(m_pClient->m_Snap.m_pLocalInfo->m_PlayerFlags&PLAYERFLAG_DEAD))))
@@ -80,7 +80,6 @@ void CCamera::OnRender()
 	}
 	else
 	{
-		m_Zoom = 0.7f;
 		static vec2 Dir = vec2(1.0f, 0.0f);
 
 		if(distance(m_Center, m_RotationCenter) <= (float)Config()->m_ClRotationRadius+0.5f)
@@ -136,9 +135,38 @@ void CCamera::ConSetPosition(IConsole::IResult *pResult, void *pUserData)
 		pSelf->ChangePosition(PositionNumber);
 }
 
+const float ZoomStep = 0.866025f;
+
+void CCamera::ConZoomPlus(IConsole::IResult *pResult, void *pUserData)
+{
+	CCamera *pSelf = (CCamera *)pUserData;
+	pSelf->m_Zoom *= ZoomStep;
+}
+
+void CCamera::ConZoomMinus(IConsole::IResult *pResult, void *pUserData)
+{
+	CCamera *pSelf = (CCamera *)pUserData;
+	if(pSelf->m_Zoom < 500.0f / ZoomStep)
+		pSelf->m_Zoom *= 1 / ZoomStep;
+}
+
+void CCamera::ConZoomReset(IConsole::IResult *pResult, void *pUserData)
+{
+	CCamera *pSelf = (CCamera *)pUserData;
+	pSelf->OnReset();
+}
+
+void CCamera::OnReset()
+{
+	m_Zoom = 1.0f;
+}
+
 void CCamera::OnConsoleInit()
 {
 	Console()->Register("set_position", "iii", CFGFLAG_CLIENT, ConSetPosition, this, "Sets the rotation position");
+	Console()->Register("zoom+", "", CFGFLAG_CLIENT, ConZoomPlus, this, "Zoom increase");
+	Console()->Register("zoom-", "", CFGFLAG_CLIENT, ConZoomMinus, this, "Zoom decrease");
+	Console()->Register("zoom", "", CFGFLAG_CLIENT, ConZoomReset, this, "Zoom reset");
 }
 
 void CCamera::OnStateChange(int NewState, int OldState)
